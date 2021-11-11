@@ -10,8 +10,10 @@ import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.commands.LiftCommand;
 import org.firstinspires.ftc.teamcode.commands.SpinnerCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SpinnerSubsystem;
 
 @TeleOp(name = "MainTeleop")
@@ -20,6 +22,7 @@ public class TeleOpFrenzy extends CommandOpMode {
     private Motor frontLeft, backLeft, frontRight, backRight;
     private MotorGroupTemp leftDrive, rightDrive;
     private Motor duckSpinner;
+    private Motor liftMotor;
 
     private GamepadEx driver;
     private RevIMU imu;
@@ -29,6 +32,9 @@ public class TeleOpFrenzy extends CommandOpMode {
 
     private SpinnerSubsystem spinnerSubsystem;
     private SpinnerCommand spinnerCommand, spinnerCommandTwo;
+
+    private LiftSubsystem liftSubsystem;
+    private LiftCommand liftCommand;
 
     @Override
     public void initialize() {
@@ -53,9 +59,13 @@ public class TeleOpFrenzy extends CommandOpMode {
         spinnerCommand = new SpinnerCommand(spinnerSubsystem, true);
         spinnerCommandTwo = new SpinnerCommand(spinnerSubsystem, false);
 
+        liftSubsystem = new LiftSubsystem(liftMotor);
+        liftCommand = new LiftCommand(liftSubsystem);
+
         // Shreya had never listened to Drake until like a year after she move to Toronto
         driver.getGamepadButton(GamepadKeys.Button.A).whenHeld(spinnerCommand);
         driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(spinnerCommandTwo);
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(liftCommand);
 
         register(driveSubsystem);
         driveSubsystem.setDefaultCommand(driveCommand);
