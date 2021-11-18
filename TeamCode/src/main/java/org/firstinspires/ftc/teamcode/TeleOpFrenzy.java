@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.RevIMU;
+import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,6 +14,8 @@ import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.LiftCommand;
 import org.firstinspires.ftc.teamcode.commands.SpinnerCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.DropOffCommand;
+import org.firstinspires.ftc.teamcode.subsystems.DropOffSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SpinnerSubsystem;
 
@@ -36,6 +39,12 @@ public class TeleOpFrenzy extends CommandOpMode {
     private LiftSubsystem liftSubsystem;
     private LiftCommand liftCommand;
 
+    private SimpleServo dropOffLeft;
+    private SimpleServo dropOffRight;
+
+    private DropOffSubsystem dropOffSubsystem;
+    private DropOffCommand dropOffCommand;
+
     @Override
     public void initialize() {
         frontLeft = new Motor(hardwareMap, "fL");
@@ -47,6 +56,11 @@ public class TeleOpFrenzy extends CommandOpMode {
         rightDrive = new MotorGroupTemp(frontRight, backRight);
 
         duckSpinner = new Motor(hardwareMap, "dS");
+
+        liftMotor = new Motor(hardwareMap, "liftM");
+
+        dropOffLeft = new SimpleServo(hardwareMap, "dropSL", 0, 90);
+        dropOffRight = new SimpleServo(hardwareMap, "dropSR", 0, -90);
 
         driver = new GamepadEx(gamepad1);
         imu = new RevIMU(hardwareMap);
@@ -62,10 +76,14 @@ public class TeleOpFrenzy extends CommandOpMode {
         liftSubsystem = new LiftSubsystem(liftMotor);
         liftCommand = new LiftCommand(liftSubsystem);
 
+        dropOffSubsystem = new DropOffSubsystem(dropOffLeft, dropOffRight);
+        dropOffCommand = new DropOffCommand(dropOffSubsystem);
+
         // Shreya had never listened to Drake until like a year after she move to Toronto
         driver.getGamepadButton(GamepadKeys.Button.A).whenHeld(spinnerCommand);
         driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(spinnerCommandTwo);
         driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(liftCommand);
+        driver.getGamepadButton(GamepadKeys.Button.Y).toggleWhenPressed(dropOffCommand);
 
         register(driveSubsystem);
         driveSubsystem.setDefaultCommand(driveCommand);
