@@ -1,20 +1,23 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+
+import org.firstinspires.ftc.teamcode.subsystems.DropOffSubsystem;
 
 public class DropOffCommand extends CommandBase {
     public DropOffSubsystem subsystem;
 
-    public DropOffCommand(DropOffSubsystem subsystem){
+    public DropOffCommand(DropOffSubsystem subsystem) {
         this.subsystem = subsystem;
         addRequirements(subsystem);
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         subsystem.drop();
     }
-    public void end(boolean interrupted){
+
+    public void end(boolean interrupted) {
         subsystem.returnHome();
     }
 }
