@@ -26,11 +26,11 @@ public class LiftCommandNoPID extends CommandBase {
             level++;
         } else if (level == 1) {
             liftSubsystem.motorUp();
-            timeToLift = 0.6;
+            timeToLift = 0.7;
             level++;
         } else {
             liftSubsystem.motorDown();
-            timeToLift = 1.1;
+            timeToLift = 1.2;
             level = 0;
         }
     }
@@ -42,6 +42,7 @@ public class LiftCommandNoPID extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        liftSubsystem.motorStop();
+        if(level != 2)
+            liftSubsystem.motorStop();
     }
 }
